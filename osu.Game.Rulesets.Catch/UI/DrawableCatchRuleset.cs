@@ -43,24 +43,71 @@ namespace osu.Game.Rulesets.Catch.UI
             VisualisationMethod = ScrollVisualisationMethod.Constant;
         }
 
+        private CatchTouchInputMapper? touchInputMapper;
+        private MouseInputHelper? relaxHelper;
+
         [BackgroundDependencyLoader]
         private void load()
         {
             // Строим список активных модов из состояния оверлея
             refreshModsFromOverlay();
-
-            // Relax через оверлей: input идёт напрямую как позиция X,
-            // клавиши лево/право не нужны — не добавляем CatchTouchInputMapper.
-            bool relaxActive = false;
+            updateInputMapping();
 
 #if ANDROID
-            relaxActive = ModMenu.RelaxEnabled;
-#else
-            relaxActive = activeMods.Any(m => m is ModRelax);
+            // Отслеживаем переключение оверлея в рантайме.
+            ModMenu.OnStateChanged += onModMenuStateChanged;
+#endif
+        }
+
+#if ANDROID
+        private void onModMenuStateChanged()
+        {
+            Schedule(() =>
+            {
+                refreshModsFromOverlay();
+                updateInputMapping();
+            });
+        }
 #endif
 
-            if (!relaxActive)
-                KeyBindingInputManager.Add(new CatchTouchInputMapper());
+        private void updateInputMapping()
+        {
+#if ANDROID
+            if (ModMenu.RelaxEnabled)
+            {
+                if (touchInputMapper != null)
+                {
+                    KeyBindingInputManager.Remove(touchInputMapper);
+                    touchInputMapper = null;
+                }
+
+                if (relaxHelper == null)
+                {
+                    relaxHelper = new RelaxMouseInputHelper((CatchPlayfield)Playfield);
+                    KeyBindingInputManager.Add(relaxHelper);
+                }
+            }
+            else
+            {
+                if (relaxHelper != null)
+                {
+                    KeyBindingInputManager.Remove(relaxHelper);
+                    relaxHelper = null;
+                }
+
+                if (touchInputMapper == null)
+                {
+                    touchInputMapper = new CatchTouchInputMapper();
+                    KeyBindingInputManager.Add(touchInputMapper);
+                }
+            }
+#else
+            if (touchInputMapper == null)
+            {
+                touchInputMapper = new CatchTouchInputMapper();
+                KeyBindingInputManager.Add(touchInputMapper);
+            }
+#endif
         }
 
         /// <summary>
@@ -83,6 +130,42 @@ namespace osu.Game.Rulesets.Catch.UI
 
             activeMods = mods;
 #endif
+        }
+
+        public void RefreshOverlayState()
+        {
+#if ANDROID
+            refreshModsFromOverlay();
+            updateInputMapping();
+#endif
+        }
+
+        private class RelaxMouseInputHelper : MouseInputHelper, IKeyBindingHandler<CatchAction>
+        {
+            private readonly CatchPlayfield playfield;
+
+            public RelaxMouseInputHelper(CatchPlayfield playfield)
+            {
+                this.playfield = playfield;
+            }
+
+            public bool OnPressed(KeyBindingPressEvent<CatchAction> _)
+            {
+                // Block key-based movement while Relax is active.
+                return true;
+            }
+
+            public void OnReleased(KeyBindingReleaseEvent<CatchAction> _)
+            {
+            }
+
+            protected override bool OnMouseMove(MouseMoveEvent e)
+            {
+                // Directly map touch/mouse position to catcher X when Relax is active.
+                var relativeX = Math.Clamp(e.MousePosition.X / playfield.DrawSize.X, 0f, 1f);
+                playfield.CatcherArea.SetCatcherPosition(relativeX * CatchPlayfield.WIDTH);
+                return false;
+            }
         }
 
         /// <summary>
@@ -125,5 +208,17 @@ namespace osu.Game.Rulesets.Catch.UI
 
         protected override ResumeOverlay CreateResumeOverlay() =>
             new DelayedResumeOverlay { Scale = new Vector2(0.65f) };
+
+        protected override void Dispose(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+#if ANDROID
+                ModMenu.OnStateChanged -= onModMenuStateChanged;
+#endif
+            }
+
+            base.Dispose(isDisposing);
+        }
     }
 }

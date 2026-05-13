@@ -10,6 +10,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Pooling;
+using osu.Framework.Platform;
 using osu.Framework.Utils;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
@@ -181,7 +182,11 @@ namespace osu.Game.Rulesets.Catch.UI
         /// Calculates the width of the area used for attempting catches in gameplay.
         /// </summary>
         /// <param name="scale">The scale of the catcher.</param>
-        public static float CalculateCatchWidth(Vector2 scale) => BASE_SIZE * Math.Abs(scale.X) * ALLOWED_CATCH_RANGE;
+        public static float CalculateCatchWidth(Vector2 scale)
+        {
+            float range = RuntimeInfo.IsMobile ? 1.2f : ALLOWED_CATCH_RANGE;
+            return BASE_SIZE * Math.Abs(scale.X) * range;
+        }
 
         /// <summary>
         /// Calculates the width of the area used for attempting catches in gameplay.

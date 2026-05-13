@@ -35,11 +35,11 @@ namespace osu.Android
         private Button? resetAllButton;
 
         // Размер и позиция триггера
-        private const int TRIGGER_SIZE = 80;
+        private const int TRIGGER_SIZE = 120;
         private const int TRIGGER_X = 0;
-        private const int TRIGGER_Y = 300;
-        private const int MENU_PADDING = 25;
-        private const int BUTTON_MARGIN = 10;
+        private const int TRIGGER_Y = 250;
+        private const int MENU_PADDING = 30;
+        private const int BUTTON_MARGIN = 16;
 
         public ModMenuOverlay(Context context)
         {
@@ -145,7 +145,7 @@ namespace osu.Android
                 TRIGGER_SIZE,
                 TRIGGER_SIZE,
                 getOverlayType(),
-                WindowManagerFlags.NotFocusable,
+                WindowManagerFlags.NotFocusable | WindowManagerFlags.NotTouchModal | WindowManagerFlags.WatchOutsideTouch,
                 Format.Translucent)
             {
                 Gravity = GravityFlags.Top | GravityFlags.Start,
@@ -208,6 +208,16 @@ namespace osu.Android
             var btn = new Button(context);
             btn.SetTextColor(Color.White);
             btn.Text = text;
+            btn.SetTextSize(Android.Util.ComplexUnitType.Sp, 16);
+
+            float density = context.Resources.DisplayMetrics.Density;
+            btn.SetPadding(
+                (int)(24 * density),
+                (int)(18 * density),
+                (int)(24 * density),
+                (int)(18 * density));
+            btn.SetMinimumHeight((int)(84 * density));
+            btn.SetMinimumWidth((int)(260 * density));
 
             if (backgroundColor.HasValue)
                 btn.SetBackgroundColor(backgroundColor.Value);

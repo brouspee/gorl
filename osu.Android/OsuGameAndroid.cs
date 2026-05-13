@@ -120,81 +120,20 @@ namespace osu.Android
                     return;
                 }
 
-                // Получаем доступные моды для текущего рулсета
-                var availableMods = ruleset.CreateAllMods().ToArray();
-                
-                // Создаем список модов для применения
-                var modsToApply = new List<Mod>();
-
-                // Добавляем текущие активные моды (не из ModMenu)
-                var currentMods = SelectedMods.Value.ToList();
-                
-                // Удаляем моды, которые управляются через ModMenu, чтобы избежать дублирования
-                currentMods.RemoveAll(m => 
-                    m is ModAutoplay || 
-                    m is ModNoFail || 
-                    m is ModRelax ||
-                    m.GetType().Name.Contains("InstantSpin") ||
-                    m.GetType().Name.Contains("ForceRanked"));
-
-                // Добавляем моды из ModMenu
-                if (ModMenu.AutoPlayEnabled)
-                {
-                    var autoplayMod = availableMods.OfType<ModAutoplay>().FirstOrDefault();
-                    if (autoplayMod != null)
-                    {
-                        modsToApply.Add(autoplayMod);
-                        global::Android.Util.Log.Debug("OsuGameAndroid", "Applied AutoPlay mod");
-                    }
-                }
-
-                if (ModMenu.NoMissEnabled)
-                {
-                    var noFailMod = availableMods.OfType<ModNoFail>().FirstOrDefault();
-                    if (noFailMod != null)
-                    {
-                        modsToApply.Add(noFailMod);
-                        global::Android.Util.Log.Debug("OsuGameAndroid", "Applied NoFail mod");
-                    }
-                }
-
-                if (ModMenu.RelaxEnabled)
-                {
-                    var relaxMod = availableMods.OfType<ModRelax>().FirstOrDefault();
-                    if (relaxMod != null)
-                    {
-                        modsToApply.Add(relaxMod);
-                        global::Android.Util.Log.Debug("OsuGameAndroid", "Applied Relax mod");
-                    }
-                }
-
-                // InstantSpin и ForceRanked могут быть кастомными модами
-                // Их реализация зависит от вашей конкретной логики
-                if (ModMenu.InstantSpinEnabled)
-                {
-                    // TODO: Добавить реализацию InstantSpin мода
-                    global::Android.Util.Log.Debug("OsuGameAndroid", "InstantSpin enabled (implementation pending)");
-                }
-
-                if (ModMenu.ForceRankedEnabled)
-                {
-                    // TODO: Добавить реализацию ForceRanked мода
-                    global::Android.Util.Log.Debug("OsuGameAndroid", "ForceRanked enabled (implementation pending)");
-                }
-
-                // Объединяем существующие моды с модами из ModMenu
-                currentMods.AddRange(modsToApply);
-
-                // Применяем обновленный список модов
+                // ModMenu управляет игровым поведением напрямую через Catch-специфичный код.
+                // Не добавляем скрытые режимы в SelectedMods, чтобы сохранить стандартные ranked semantics.
                 if (!SelectedMods.Disabled)
                 {
-                    SelectedMods.Value = currentMods.ToArray();
-                    global::Android.Util.Log.Info("OsuGameAndroid", $"Applied {modsToApply.Count} mods from ModMenu");
+                    global::Android.Util.Log.Info("OsuGameAndroid", "Refreshing ModMenu overlay state without changing selected mods");
                 }
                 else
                 {
-                    global::Android.Util.Log.Warn("OsuGameAndroid", "Cannot apply mods: SelectedMods is disabled");
+                    global::Android.Util.Log.Warn("OsuGameAndroid", "Cannot refresh ModMenu state: SelectedMods is disabled");
                 }
+
+                // Если мы уже в игре, обновляем состояние живого Catch-рулсета.
+                if (ScreenStack.CurrentScreen is osu.Game.Screens.Play.Player player && player.DrawableRuleset is osu.Game.Rulesets.Catch.UI.DrawableCatchRuleset catchDrawable)
+                    catchDrawable.RefreshOverlayState();
             }
             catch (Exception ex)
             {
