@@ -51,6 +51,7 @@ namespace osu.Android
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            ModMenu.Init(this);
             handleIntent(Intent);
 
             Window?.AddFlags(WindowManagerFlags.Fullscreen);

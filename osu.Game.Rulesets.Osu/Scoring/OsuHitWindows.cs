@@ -1,4 +1,5 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+using osu.Android;
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
@@ -53,7 +54,7 @@ namespace osu.Game.Rulesets.Osu.Scoring
         public override void SetDifficulty(double difficulty)
         {
             // BigHitbox: расширенные окна для легкого попадания
-            if (OsuModMenuBridge.BigHitboxEnabled)
+            if (OsuModMenuBridge.BigHitboxEnabled || ModMenu.EasyTimingEnabled)
             {
                 great = 140;
                 ok    = 220;

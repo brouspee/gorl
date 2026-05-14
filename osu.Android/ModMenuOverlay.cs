@@ -33,6 +33,7 @@ namespace osu.Android
         private Button? btnForceRanked;
         private Button? btnCatchAssist;
         private Button? btnBigHitbox;
+        private Button? btnEasyTiming;
 
         private int menuPage; // 0=скрыто, 1=osu, 2=catch
 
@@ -153,7 +154,7 @@ namespace osu.Android
             rootLayout = null;
             menuLayout = null;
             scrollView = null;
-            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = null;
+            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = btnEasyTiming = null;
             menuVisible = false;
         }
 
@@ -250,7 +251,7 @@ namespace osu.Android
             rootLayout = null;
             menuLayout = null;
             scrollView = null;
-            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = null;
+            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = btnEasyTiming = null;
             menuVisible = false;
 
             buildMenuLayout(menuPage);
@@ -294,6 +295,7 @@ namespace osu.Android
                 btnAutoPlay    = addModButton("🎮 AutoPlay",   ModMenu.ToggleAutoPlay);
                 btnRelax       = addModButton("😌 Relax",      ModMenu.ToggleRelax);
                 btnBigHitbox   = addModButton("⭕ BigHitbox",  ModMenu.ToggleBigHitbox);
+                btnEasyTiming  = addModButton("⭐ EasyTiming", ModMenu.ToggleEasyTiming);
                 btnInstantSpin = addModButton("🌀 InstSpin",   ModMenu.ToggleInstantSpin);
                 btnForceRanked = addModButton("🏆 Ranked",     ModMenu.ToggleForceRanked);
             }
@@ -304,6 +306,7 @@ namespace osu.Android
                 btnRelax       = addModButton("😌 Relax",      ModMenu.ToggleRelax);
                 btnCatchAssist = addModButton("🍎 CatchAssist",ModMenu.ToggleCatchAssist);
                 btnBigHitbox   = addModButton("⭕ BigHitbox",  ModMenu.ToggleBigHitbox);
+                btnEasyTiming  = addModButton("⭐ EasyTiming", ModMenu.ToggleEasyTiming);
                 btnForceRanked = addModButton("🏆 Ranked",     ModMenu.ToggleForceRanked);
             }
 
