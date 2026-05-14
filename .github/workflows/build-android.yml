@@ -1,58 +1,54 @@
 name: Build Android APK
 
 on:
-  push:
-    branches: [main, master]
   workflow_dispatch:
+  push:
+    branches:
+      - add-mod-menu
 
 jobs:
-  build-android-apk:
-    name: Build Android APK
-    runs-on: windows-latest
-    timeout-minutes: 90
-    
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Собираем отдельный APK для каждой архитектуры.
+        # Это гарантирует что libpenguin.so и другие нативные либы
+        # попадут в APK для нужного RID.
+        rid: [android-arm64, android-arm, android-x86]
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: microsoft
-          java-version: 17
-
-      - name: Install .NET 8.0.x
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: 8.0.x
 
-      - name: Install .NET workloads
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Android workload
         run: dotnet workload install android
 
-      - name: Restore
-        run: dotnet restore osu.Android.slnf
+      - name: Restore Android project
+        run: dotnet restore osu.Android/osu.Android.csproj
 
-      - name: Build Release
-        run: dotnet build -c Release osu.Android.slnf --no-restore
-
-      - name: Build AAB
+      - name: Publish Android APK (${{ matrix.rid }})
         run: |
-          dotnet publish osu.Android/osu.Android.csproj -c Release -p:AndroidKeyStore=false -p:AndroidPackageFormat=aab -o ./artifacts
+          dotnet publish osu.Android/osu.Android.csproj \
+            -c Release \
+            -f net8.0-android \
+            -r ${{ matrix.rid }} \
+            -p:AndroidPackageFormat=apk \
+            -p:AndroidUseAapt2=true
 
-      - name: Build APK
-        run: |
-          dotnet publish osu.Android/osu.Android.csproj -c Release -p:AndroidKeyStore=false -p:AndroidPackageFormat=apk -o ./artifacts
-
-      - name: Upload artifacts
+      - name: Upload APK (${{ matrix.rid }})
         uses: actions/upload-artifact@v4
         with:
-          name: android-apk
-          path: ./artifacts/*.apk
-          retention-days: 30
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-aab
-          path: ./artifacts/*.aab
-          retention-days: 30
+          name: osu-lazer-${{ matrix.rid }}
+          path: osu.Android/bin/Release/net8.0-android/${{ matrix.rid }}/publish/*.apk
