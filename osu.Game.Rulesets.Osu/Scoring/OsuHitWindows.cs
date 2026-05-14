@@ -1,5 +1,4 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
-using osu.Android;
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
@@ -39,9 +38,9 @@ namespace osu.Game.Rulesets.Osu.Scoring
 
         public override void SetDifficulty(double difficulty)
         {
-            great = ModMenu.HardTimingEnabled ? 80 : ModMenu.EasyTimingEnabled || ModMenu.BigHitboxEnabled ? 160 : Math.Floor(IBeatmapDifficultyInfo.DifficultyRange(difficulty, GREAT_WINDOW_RANGE)) - 0.5;
-            ok = ModMenu.HardTimingEnabled ? 100 : ModMenu.EasyTimingEnabled || ModMenu.BigHitboxEnabled ? 260 : Math.Floor(IBeatmapDifficultyInfo.DifficultyRange(difficulty, OK_WINDOW_RANGE)) - 0.5;
-            meh = ModMenu.HardTimingEnabled ? 140 : ModMenu.EasyTimingEnabled || ModMenu.BigHitboxEnabled ? 360 : Math.Floor(IBeatmapDifficultyInfo.DifficultyRange(difficulty, MEH_WINDOW_RANGE)) - 0.5;
+            great = Math.Floor(IBeatmapDifficultyInfo.DifficultyRange(difficulty, GREAT_WINDOW_RANGE)) - 0.5;
+            ok = Math.Floor(IBeatmapDifficultyInfo.DifficultyRange(difficulty, OK_WINDOW_RANGE)) - 0.5;
+            meh = Math.Floor(IBeatmapDifficultyInfo.DifficultyRange(difficulty, MEH_WINDOW_RANGE)) - 0.5;
         }
 
         public override double WindowFor(HitResult result)
