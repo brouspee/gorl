@@ -2,8 +2,6 @@
 // ПУТЬ: osu.Android/ModMenu.cs
 
 using System;
-using System.IO;
-using System.Text.Json;
 using Android.Content;
 using Android.Preferences;
 
@@ -21,6 +19,7 @@ namespace osu.Android
         private static bool catchAssist;
         private static bool bigHitbox;
         private static bool easyTiming;
+        private static bool hardTiming;
 
         public static event Action? OnStateChanged;
 
@@ -33,6 +32,7 @@ namespace osu.Android
         public static bool CatchAssistEnabled { get { lock (sync) return catchAssist; } }
         public static bool BigHitboxEnabled { get { lock (sync) return bigHitbox; } }
         public static bool EasyTimingEnabled { get { lock (sync) return easyTiming; } }
+        public static bool HardTimingEnabled { get { lock (sync) return hardTiming; } }
 
         // ---- Toggle методы ----
         public static void ToggleAutoPlay()
@@ -86,9 +86,16 @@ namespace osu.Android
             fire();
         }
 
+        public static void ToggleHardTiming()
+        {
+            lock (sync) hardTiming = !hardTiming;
+            SaveSettings();
+            fire();
+        }
+
         public static void ResetAll()
         {
-            lock (sync) autoPlay = relax = instantSpin = forceRanked = catchAssist = bigHitbox = easyTiming = false;
+            lock (sync) autoPlay = relax = instantSpin = forceRanked = catchAssist = bigHitbox = easyTiming = hardTiming = false;
             SaveSettings();
             fire();
         }
@@ -113,6 +120,7 @@ namespace osu.Android
                 edit?.PutBoolean("mod_catchAssist", catchAssist);
                 edit?.PutBoolean("mod_bigHitbox", bigHitbox);
                 edit?.PutBoolean("mod_easyTiming", easyTiming);
+                edit?.PutBoolean("mod_hardTiming", hardTiming);
                 edit?.Apply();
             }
             catch { }
@@ -133,6 +141,7 @@ namespace osu.Android
                         catchAssist = prefs.GetBoolean("mod_catchAssist", false);
                         bigHitbox = prefs.GetBoolean("mod_bigHitbox", false);
                         easyTiming = prefs.GetBoolean("mod_easyTiming", false);
+                        hardTiming = prefs.GetBoolean("mod_hardTiming", false);
                     }
                 }
                 fire();
@@ -141,15 +150,8 @@ namespace osu.Android
         }
 
         public static string GetDebugInfo() =>
-            $"Auto={autoPlay} Relax={relax} BigHitbox={bigHitbox} EasyTiming={easyTiming}";
+            $"Auto={autoPlay} Relax={relax} BHB={bigHitbox} EasyT={easyTiming} HardT={hardTiming}";
 
         private static void fire() => OnStateChanged?.Invoke();
     }
 }
-
-
-// ---- PATCHED ----
-// NoMiss убран.
-// EasyTiming добавлен.
-// SharedPreferences работает.
-// -----------------

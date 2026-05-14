@@ -34,6 +34,7 @@ namespace osu.Android
         private Button? btnCatchAssist;
         private Button? btnBigHitbox;
         private Button? btnEasyTiming;
+        private Button? btnHardTiming;
 
         private int menuPage; // 0=скрыто, 1=osu, 2=catch
 
@@ -79,8 +80,8 @@ namespace osu.Android
                 Format.Translucent);
 
             triggerParams.Gravity = GravityFlags.Top | GravityFlags.Left;
-            triggerParams.X = dpToPx(4);
-            triggerParams.Y = dpToPx(4);
+            triggerParams.X = dpToPx(12);
+            triggerParams.Y = dpToPx(12);
 
             triggerButton = btn;
             windowManager.AddView(triggerButton, triggerParams);
@@ -154,7 +155,7 @@ namespace osu.Android
             rootLayout = null;
             menuLayout = null;
             scrollView = null;
-            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = btnEasyTiming = null;
+            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = btnEasyTiming = btnHardTiming = null;
             menuVisible = false;
         }
 
@@ -251,7 +252,7 @@ namespace osu.Android
             rootLayout = null;
             menuLayout = null;
             scrollView = null;
-            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = btnEasyTiming = null;
+            btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = btnEasyTiming = btnHardTiming = null;
             menuVisible = false;
 
             buildMenuLayout(menuPage);
@@ -296,6 +297,7 @@ namespace osu.Android
                 btnRelax       = addModButton("😌 Relax",      ModMenu.ToggleRelax);
                 btnBigHitbox   = addModButton("⭕ BigHitbox",  ModMenu.ToggleBigHitbox);
                 btnEasyTiming  = addModButton("⭐ EasyTiming", ModMenu.ToggleEasyTiming);
+                btnHardTiming  = addModButton("⚡ HardTiming", ModMenu.ToggleHardTiming);
                 btnInstantSpin = addModButton("🌀 InstSpin",   ModMenu.ToggleInstantSpin);
                 btnForceRanked = addModButton("🏆 Ranked",     ModMenu.ToggleForceRanked);
             }
@@ -307,6 +309,7 @@ namespace osu.Android
                 btnCatchAssist = addModButton("🍎 CatchAssist",ModMenu.ToggleCatchAssist);
                 btnBigHitbox   = addModButton("⭕ BigHitbox",  ModMenu.ToggleBigHitbox);
                 btnEasyTiming  = addModButton("⭐ EasyTiming", ModMenu.ToggleEasyTiming);
+                btnHardTiming  = addModButton("⚡ HardTiming", ModMenu.ToggleHardTiming);
                 btnForceRanked = addModButton("🏆 Ranked",     ModMenu.ToggleForceRanked);
             }
 

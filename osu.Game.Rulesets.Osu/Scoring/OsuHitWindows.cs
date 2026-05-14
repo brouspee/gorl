@@ -53,17 +53,26 @@ namespace osu.Game.Rulesets.Osu.Scoring
 
         public override void SetDifficulty(double difficulty)
         {
-            // BigHitbox: расширенные окна для легкого попадания
-            if (OsuModMenuBridge.BigHitboxEnabled || ModMenu.EasyTimingEnabled)
+            // Priority: HardTiming > EasyTiming > Normal
+            if (ModMenu.HardTimingEnabled)
             {
-                great = 140;
-                ok    = 220;
-                meh   = 320;
+                // Hard: очень строгие окна (80/100/140ms)
+                great = 80;
+                ok    = 100;
+                meh   = 140;
+                miss  = 20;
+            }
+            else if (OsuModMenuBridge.BigHitboxEnabled || ModMenu.EasyTimingEnabled)
+            {
+                // Easy: расширенные окна (160/260/360ms)
+                great = 160;
+                ok    = 260;
+                meh   = 360;
                 miss  = 50;
             }
             else
             {
-                // Стандартные окна: фиксированные значения
+                // Normal: стандартные окна (130/200/320ms)
                 great = 130;
                 ok    = 200;
                 meh   = 320;
@@ -96,4 +105,6 @@ namespace osu.Game.Rulesets.Osu.Scoring
 
 
 // TIMING_ASSIST_PATCH
-// Enlarged hit timing windows when BigHitbox is enabled.
+// HardTiming: 80/100/140ms - Very strict
+// EasyTiming: 160/260/360ms - Very easy
+// Normal: 130/200/320ms
