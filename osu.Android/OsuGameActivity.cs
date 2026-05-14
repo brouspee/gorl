@@ -11,6 +11,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Graphics;
 using Android.OS;
+using Android.Preferences;
 using Android.Provider;
 using Android.Views;
 using osu.Framework.Android;
@@ -75,6 +76,10 @@ namespace osu.Android
             Assembly.Load("osu.Game.Rulesets.Taiko");
             Assembly.Load("osu.Game.Rulesets.Catch");
             Assembly.Load("osu.Game.Rulesets.Mania");
+
+            // Инициализировать ModMenu с SharedPreferences
+            var prefs = PreferenceManager.GetDefaultSharedPreferences(this);
+            ModMenu.Init(prefs);
         }
 
         public override void OnWindowFocusChanged(bool hasFocus)
