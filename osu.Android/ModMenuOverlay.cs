@@ -28,7 +28,6 @@ namespace osu.Android
         private WindowManagerLayoutParams? menuLayoutParams;
 
         private Button? btnAutoPlay;
-        private Button? btnNoMiss;
         private Button? btnRelax;
         private Button? btnInstantSpin;
         private Button? btnForceRanked;
@@ -154,7 +153,6 @@ namespace osu.Android
             rootLayout = null;
             menuLayout = null;
             scrollView = null;
-            btnAutoPlay = btnNoMiss = btnRelax = null;
             btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = null;
             menuVisible = false;
         }
@@ -252,7 +250,6 @@ namespace osu.Android
             rootLayout = null;
             menuLayout = null;
             scrollView = null;
-            btnAutoPlay = btnNoMiss = btnRelax = null;
             btnInstantSpin = btnForceRanked = btnCatchAssist = btnBigHitbox = null;
             menuVisible = false;
 
@@ -295,8 +292,6 @@ namespace osu.Android
             {
                 // osu! стандарт
                 btnAutoPlay    = addModButton("🎮 AutoPlay",   ModMenu.ToggleAutoPlay);
-                // NoMiss: когда включён — NF/Easy не нужны (скрыты из меню)
-                btnNoMiss      = addModButton("💚 NoMiss",     ModMenu.ToggleNoMiss);
                 btnRelax       = addModButton("😌 Relax",      ModMenu.ToggleRelax);
                 btnBigHitbox   = addModButton("⭕ BigHitbox",  ModMenu.ToggleBigHitbox);
                 btnInstantSpin = addModButton("🌀 InstSpin",   ModMenu.ToggleInstantSpin);
@@ -306,7 +301,6 @@ namespace osu.Android
             {
                 // osu!catch
                 btnAutoPlay    = addModButton("🎮 AutoPlay",   ModMenu.ToggleAutoPlay);
-                btnNoMiss      = addModButton("💚 NoMiss",     ModMenu.ToggleNoMiss);
                 btnRelax       = addModButton("😌 Relax",      ModMenu.ToggleRelax);
                 btnCatchAssist = addModButton("🍎 CatchAssist",ModMenu.ToggleCatchAssist);
                 btnBigHitbox   = addModButton("⭕ BigHitbox",  ModMenu.ToggleBigHitbox);
@@ -360,25 +354,21 @@ namespace osu.Android
         {
             if (!menuVisible) return;
 
-            bool nm = ModMenu.NoMissEnabled;
 
             if (menuPage == 1)
             {
                 setBtn(btnAutoPlay,    "🎮 AutoPlay",    ModMenu.AutoPlayEnabled);
-                setBtn(btnNoMiss,      "💚 NoMiss",      nm);
                 setBtn(btnRelax,       "😌 Relax",       ModMenu.RelaxEnabled);
                 setBtn(btnBigHitbox,   "⭕ BigHitbox",   ModMenu.BigHitboxEnabled);
                 setBtn(btnInstantSpin, "🌀 InstSpin",    ModMenu.InstantSpinEnabled);
                 setBtn(btnForceRanked, "🏆 Ranked",      ModMenu.ForceRankedEnabled);
 
-                // Когда NoMiss включён — AutoPlay меняет надпись для ясности
                 if (btnAutoPlay != null && ModMenu.AutoPlayEnabled)
                     btnAutoPlay.Text = "✅ 🎮 AutoPlay+NM";
             }
             else
             {
                 setBtn(btnAutoPlay,    "🎮 AutoPlay",    ModMenu.AutoPlayEnabled);
-                setBtn(btnNoMiss,      "💚 NoMiss",      nm);
                 setBtn(btnRelax,       "😌 Relax",       ModMenu.RelaxEnabled);
                 setBtn(btnCatchAssist, "🍎 CatchAssist", ModMenu.CatchAssistEnabled);
                 setBtn(btnBigHitbox,   "⭕ BigHitbox",   ModMenu.BigHitboxEnabled);

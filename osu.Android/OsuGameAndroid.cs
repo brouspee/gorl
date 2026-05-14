@@ -74,14 +74,14 @@ namespace osu.Android
                 // передавал 4 (с bigHitbox) → ошибка компиляции. Теперь сигнатуры совпадают.
                 ModMenuBridge.Init(
                     autoPlay:  () => ModMenu.AutoPlayEnabled,
-                    noMiss:    () => ModMenu.NoMissEnabled,
+                    
                     relax:     () => ModMenu.RelaxEnabled,
                     bigHitbox: () => ModMenu.BigHitboxEnabled
                 );
 
                 OsuModMenuBridge.Init(
                     autoPlay:  () => ModMenu.AutoPlayEnabled,
-                    noMiss:    () => ModMenu.NoMissEnabled,
+                    
                     relax:     () => ModMenu.RelaxEnabled,
                     bigHitbox: () => ModMenu.BigHitboxEnabled
                 );
